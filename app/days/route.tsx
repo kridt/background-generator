@@ -122,8 +122,8 @@ const COLORS = {
   friend: "#5B9CF6",
   payday: "#34C759",
   holiday: "rgba(212,215,220,0.3)",
-  textMuted: "rgba(212,215,220,0.8)",
-  textMonth: "rgba(212,215,220,0.6)",
+  textMuted: "#B8BCC4",
+  textMonth: "#9CA0A8",
   textAccent: "#E85D3B",
 };
 
@@ -208,7 +208,8 @@ export async function GET(req: Request) {
             display: "flex",
             justifyContent: "center",
             color: COLORS.textMuted,
-            fontSize: height * 0.014,
+            fontSize: height * 0.022,
+            fontWeight: 500,
           }}
         >
           {year} · Week {weekNumber}
@@ -220,13 +221,12 @@ export async function GET(req: Request) {
             key={name}
             style={{
               position: "absolute",
-              top: topPad + i * monthCellY - height * 0.005,
-              left: sidePadLeft - width * 0.02,
+              top: topPad + i * monthCellY - height * 0.008,
+              left: width * 0.02,
               color: COLORS.textMonth,
-              fontSize: height * 0.013,
+              fontSize: height * 0.018,
+              fontWeight: 500,
               display: "flex",
-              justifyContent: "flex-end",
-              width: width * 0.08,
             }}
           >
             {name}
@@ -295,9 +295,10 @@ export async function GET(req: Request) {
             right: 0,
             display: "flex",
             justifyContent: "center",
-            fontSize: height * 0.012,
+            fontSize: height * 0.018,
+            fontWeight: 500,
             color: COLORS.textMuted,
-            gap: 8,
+            gap: 12,
           }}
         >
           <span style={{ color: COLORS.textAccent }}>{daysLeft}</span>
