@@ -34,8 +34,11 @@ export async function GET(req: Request) {
     .png()
     .toBuffer();
 
+  // Convert Buffer to Uint8Array for Response compatibility
+  const uint8Array = new Uint8Array(pngBuffer);
+
   // Return as PNG image
-  return new Response(pngBuffer, {
+  return new Response(uint8Array, {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
