@@ -4,6 +4,11 @@ import { loadBirthdays, getBirthdayTypeForDate, Birthday } from "@/lib/birthdays
 
 export const runtime = "edge";
 
+// Load Inter font from Google Fonts
+const interFont = fetch(
+  new URL("https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hjp-Ek-_EeA.woff", import.meta.url)
+).then((res) => res.arrayBuffer());
+
 // Malta Public Holidays
 function getMaltaHoliday(date: Date): string | null {
   const month = date.getUTCMonth();
@@ -122,8 +127,8 @@ const COLORS = {
   friend: "#5B9CF6",
   payday: "#34C759",
   holiday: "rgba(212,215,220,0.3)",
-  textMuted: "#B8BCC4",
-  textMonth: "#9CA0A8",
+  textMuted: "#FFFFFF",
+  textMonth: "#E0E0E0",
   textAccent: "#E85D3B",
 };
 
@@ -133,7 +138,7 @@ export async function GET(req: Request) {
   const height = clamp(parseInt(searchParams.get("height") ?? "2778", 10) || 2778, 900, 4000);
   const dateParam = searchParams.get("date");
   const dateUTC = parseDateOrTodayCET(dateParam);
-  const birthdays = await loadBirthdays();
+  const [birthdays, fontData] = await Promise.all([loadBirthdays(), interFont]);
 
   const year = dateUTC.getUTCFullYear();
   const totalDays = daysInYear(year);
@@ -195,7 +200,7 @@ export async function GET(req: Request) {
           background: `linear-gradient(180deg, ${COLORS.bgTop} 0%, ${COLORS.bgBottom} 100%)`,
           display: "flex",
           flexDirection: "column",
-          fontFamily: "sans-serif",
+          fontFamily: "Inter",
         }}
       >
         {/* Year and Week */}
@@ -313,6 +318,17 @@ export async function GET(req: Request) {
         </div>
       </div>
     ),
-    { width, height }
+    {
+      width,
+      height,
+      fonts: [
+        {
+          name: "Inter",
+          data: fontData,
+          style: "normal",
+          weight: 500,
+        },
+      ],
+    }
   );
 }
