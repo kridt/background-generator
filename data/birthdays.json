@@ -1,0 +1,11 @@
+{
+  "birthdays": [
+    {
+      "name": "Me",
+      "month": 2,
+      "day": 22,
+      "type": "self",
+      "year": 2003
+    }
+  ]
+}
