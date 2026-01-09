@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import fs from "fs";
 import path from "path";
 
@@ -14,12 +14,20 @@ interface Birthday {
 const BIRTHDAYS_KEY = "birthdays";
 const LOCAL_PATH = path.join(process.cwd(), "data", "birthdays.json");
 
-// Check if we're running on Vercel (KV available) or locally (use file)
-const isVercel = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
+// Check if we're running on Vercel with Upstash
+const isUpstash = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN;
+
+// Create Redis client if on Upstash
+const redis = isUpstash
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL!,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+    })
+  : null;
 
 async function getBirthdays(): Promise<Birthday[]> {
-  if (isVercel) {
-    const birthdays = await kv.get<Birthday[]>(BIRTHDAYS_KEY);
+  if (redis) {
+    const birthdays = await redis.get<Birthday[]>(BIRTHDAYS_KEY);
     return birthdays || [];
   } else {
     // Local development - use file
@@ -33,8 +41,8 @@ async function getBirthdays(): Promise<Birthday[]> {
 }
 
 async function saveBirthdays(birthdays: Birthday[]): Promise<void> {
-  if (isVercel) {
-    await kv.set(BIRTHDAYS_KEY, birthdays);
+  if (redis) {
+    await redis.set(BIRTHDAYS_KEY, birthdays);
   } else {
     // Local development - use file
     fs.writeFileSync(LOCAL_PATH, JSON.stringify({ birthdays }, null, 2) + "\n");

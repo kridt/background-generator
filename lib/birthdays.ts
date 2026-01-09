@@ -1,4 +1,4 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import fs from "fs";
 import path from "path";
 
@@ -15,15 +15,23 @@ export interface Birthday {
 const BIRTHDAYS_KEY = "birthdays";
 const LOCAL_PATH = path.join(process.cwd(), "data", "birthdays.json");
 
-// Check if we're running on Vercel (KV available) or locally (use file)
-const isVercel = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
+// Check if we're running on Vercel with Upstash
+const isUpstash = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN;
+
+// Create Redis client if on Upstash
+const redis = isUpstash
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL!,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+    })
+  : null;
 
 /**
- * Load birthdays - from KV on Vercel, from file locally
+ * Load birthdays - from Upstash on Vercel, from file locally
  */
 export async function loadBirthdays(): Promise<Birthday[]> {
-  if (isVercel) {
-    const birthdays = await kv.get<Birthday[]>(BIRTHDAYS_KEY);
+  if (redis) {
+    const birthdays = await redis.get<Birthday[]>(BIRTHDAYS_KEY);
     return birthdays || [];
   } else {
     // Local development - use file

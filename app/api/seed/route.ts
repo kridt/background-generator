@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 
 // Initial birthdays to seed
 const INITIAL_BIRTHDAYS = [
@@ -11,11 +11,23 @@ const INITIAL_BIRTHDAYS = [
   { name: "Alex", month: 7, day: 22, type: "friend" as const },
 ];
 
-// GET - Seed the KV with initial birthdays (call once after setup)
+// GET - Seed the database with initial birthdays (call once after setup)
 export async function GET() {
+  // Check if Upstash is configured
+  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+    return NextResponse.json({
+      error: "Upstash not configured. Please add UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN environment variables."
+    }, { status: 500 });
+  }
+
   try {
+    const redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    });
+
     // Check if already seeded
-    const existing = await kv.get("birthdays");
+    const existing = await redis.get("birthdays");
     if (existing) {
       return NextResponse.json({
         message: "Already seeded",
@@ -24,7 +36,7 @@ export async function GET() {
     }
 
     // Seed initial birthdays
-    await kv.set("birthdays", INITIAL_BIRTHDAYS);
+    await redis.set("birthdays", INITIAL_BIRTHDAYS);
 
     return NextResponse.json({
       success: true,
