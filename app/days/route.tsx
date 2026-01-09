@@ -4,9 +4,9 @@ import { loadBirthdays, getBirthdayTypeForDate, Birthday } from "@/lib/birthdays
 
 export const runtime = "edge";
 
-// Fetch Inter font from jsDelivr CDN
-const interRegular = fetch(
-  "https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/files/inter-latin-400-normal.woff2"
+// Fetch Geist font from Vercel's CDN (known to work with @vercel/og)
+const geistFont = fetch(
+  "https://github.com/vercel/geist-font/raw/main/packages/next/dist/fonts/geist-sans/Geist-Regular.otf"
 ).then((res) => res.arrayBuffer());
 
 // Malta Public Holidays
@@ -138,7 +138,7 @@ export async function GET(req: Request) {
   const height = clamp(parseInt(searchParams.get("height") ?? "2778", 10) || 2778, 900, 4000);
   const dateParam = searchParams.get("date");
   const dateUTC = parseDateOrTodayCET(dateParam);
-  const [birthdays, fontData] = await Promise.all([loadBirthdays(), interRegular]);
+  const [birthdays, fontData] = await Promise.all([loadBirthdays(), geistFont]);
 
   const year = dateUTC.getUTCFullYear();
   const totalDays = daysInYear(year);
@@ -200,7 +200,7 @@ export async function GET(req: Request) {
           background: `linear-gradient(180deg, ${COLORS.bgTop} 0%, ${COLORS.bgBottom} 100%)`,
           display: "flex",
           flexDirection: "column",
-          fontFamily: "Inter",
+          fontFamily: "Geist",
         }}
       >
         {/* Year and Week */}
@@ -323,7 +323,7 @@ export async function GET(req: Request) {
       height,
       fonts: [
         {
-          name: "Inter",
+          name: "Geist",
           data: fontData,
           style: "normal",
           weight: 400,
