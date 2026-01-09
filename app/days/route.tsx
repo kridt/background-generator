@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import sharp from "sharp";
 import { clamp, parseDateOrTodayCET } from "@/lib/date";
 import { loadBirthdays } from "@/lib/birthdays";
@@ -36,7 +35,7 @@ export async function GET(req: Request) {
     .toBuffer();
 
   // Return as PNG image
-  return new NextResponse(pngBuffer, {
+  return new Response(pngBuffer, {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
