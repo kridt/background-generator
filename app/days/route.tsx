@@ -195,7 +195,6 @@ export async function GET(req: Request) {
           background: `linear-gradient(180deg, ${COLORS.bgTop} 0%, ${COLORS.bgBottom} 100%)`,
           display: "flex",
           flexDirection: "column",
-          fontFamily: "system-ui, sans-serif",
         }}
       >
         {/* Year and Week */}
