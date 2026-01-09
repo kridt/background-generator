@@ -4,9 +4,9 @@ import { loadBirthdays, getBirthdayTypeForDate, Birthday } from "@/lib/birthdays
 
 export const runtime = "edge";
 
-// Fetch Geist font from Vercel's CDN (known to work with @vercel/og)
-const geistFont = fetch(
-  "https://github.com/vercel/geist-font/raw/main/packages/next/dist/fonts/geist-sans/Geist-Regular.otf"
+// Fetch Roboto font from Google Fonts CDN (direct woff2 file)
+const robotFont = fetch(
+  "https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2"
 ).then((res) => res.arrayBuffer());
 
 // Malta Public Holidays
@@ -138,7 +138,7 @@ export async function GET(req: Request) {
   const height = clamp(parseInt(searchParams.get("height") ?? "2778", 10) || 2778, 900, 4000);
   const dateParam = searchParams.get("date");
   const dateUTC = parseDateOrTodayCET(dateParam);
-  const [birthdays, fontData] = await Promise.all([loadBirthdays(), geistFont]);
+  const [birthdays, fontData] = await Promise.all([loadBirthdays(), robotFont]);
 
   const year = dateUTC.getUTCFullYear();
   const totalDays = daysInYear(year);
@@ -200,7 +200,7 @@ export async function GET(req: Request) {
           background: `linear-gradient(180deg, ${COLORS.bgTop} 0%, ${COLORS.bgBottom} 100%)`,
           display: "flex",
           flexDirection: "column",
-          fontFamily: "Geist",
+          fontFamily: "Roboto",
         }}
       >
         {/* Year and Week */}
@@ -323,7 +323,7 @@ export async function GET(req: Request) {
       height,
       fonts: [
         {
-          name: "Geist",
+          name: "Roboto",
           data: fontData,
           style: "normal",
           weight: 400,
