@@ -385,7 +385,7 @@ export function renderYearGridSvg(opts: RenderOptions): string {
   for (let month = 0; month < 12; month++) {
     const labelY = gridTop + month * monthCellY + monthLabelFontSize * 0.35;
     monthLabels += `<text x="${monthLabelX}" y="${labelY}" text-anchor="end"
-      font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+      font-family="Arial, Helvetica, sans-serif"
       font-size="${monthLabelFontSize}" font-weight="400" letter-spacing="0.5"
       fill="${COLORS.textMonth}">${MONTH_NAMES[month]}</text>`;
   }
@@ -450,7 +450,7 @@ export function renderYearGridSvg(opts: RenderOptions): string {
       if (payday) {
         const dollarSize = Math.max(8, monthR * 1.1);
         circles += `<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central"
-          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+          font-family="Arial, Helvetica, sans-serif"
           font-size="${dollarSize}" font-weight="700"
           fill="${COLORS.bgTop}" opacity="${dayIndex > todayIndex ? 0.85 : 1}">$</text>`;
       }
@@ -459,8 +459,8 @@ export function renderYearGridSvg(opts: RenderOptions): string {
 
   const monthLines = "";
 
-  // Font settings
-  const fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+  // Font settings - use generic sans-serif for server-side rendering compatibility
+  const fontFamily = "Arial, Helvetica, sans-serif";
 
   // Footer stats positioned above iOS lock screen buttons (~83%)
   const footerY = gridBottom + Math.round(height * 0.025);
