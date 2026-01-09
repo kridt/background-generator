@@ -4,6 +4,11 @@ import { loadBirthdays, getBirthdayTypeForDate, Birthday } from "@/lib/birthdays
 
 export const runtime = "edge";
 
+// Fetch Inter font from jsDelivr CDN
+const interRegular = fetch(
+  "https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/files/inter-latin-400-normal.woff2"
+).then((res) => res.arrayBuffer());
+
 // Malta Public Holidays
 function getMaltaHoliday(date: Date): string | null {
   const month = date.getUTCMonth();
@@ -133,7 +138,7 @@ export async function GET(req: Request) {
   const height = clamp(parseInt(searchParams.get("height") ?? "2778", 10) || 2778, 900, 4000);
   const dateParam = searchParams.get("date");
   const dateUTC = parseDateOrTodayCET(dateParam);
-  const birthdays = await loadBirthdays();
+  const [birthdays, fontData] = await Promise.all([loadBirthdays(), interRegular]);
 
   const year = dateUTC.getUTCFullYear();
   const totalDays = daysInYear(year);
@@ -195,6 +200,7 @@ export async function GET(req: Request) {
           background: `linear-gradient(180deg, ${COLORS.bgTop} 0%, ${COLORS.bgBottom} 100%)`,
           display: "flex",
           flexDirection: "column",
+          fontFamily: "Inter",
         }}
       >
         {/* Year and Week */}
@@ -312,6 +318,17 @@ export async function GET(req: Request) {
         </div>
       </div>
     ),
-    { width, height }
+    {
+      width,
+      height,
+      fonts: [
+        {
+          name: "Inter",
+          data: fontData,
+          style: "normal",
+          weight: 400,
+        },
+      ],
+    }
   );
 }
