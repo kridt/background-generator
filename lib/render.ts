@@ -203,11 +203,11 @@ const COLORS = {
   // Holiday ring - subtle
   holiday: "rgba(212,215,220,0.25)",
 
-  // Text - refined opacity levels
-  textMuted: "rgba(212,215,220,0.55)",
-  textQuote: "rgba(212,215,220,0.30)",
+  // Text - brighter for visibility
+  textMuted: "rgba(212,215,220,0.85)",
+  textQuote: "rgba(212,215,220,0.60)",
   textAccent: "#E85D3B",
-  textMonth: "rgba(212,215,220,0.35)",
+  textMonth: "rgba(212,215,220,0.70)",
 };
 
 /**
