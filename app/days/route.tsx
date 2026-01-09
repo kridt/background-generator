@@ -1,12 +1,9 @@
 import { ImageResponse } from "@vercel/og";
 import { clamp, parseDateOrTodayCET, dayOfYear, daysInYear } from "@/lib/date";
-import { loadBirthdays, getBirthdayTypeForDate, Birthday } from "@/lib/birthdays";
+import { loadBirthdays, getBirthdayTypeForDate, Birthday } from "@/lib/birthdays-edge";
+import { getFontBuffer } from "./font";
 
 export const runtime = "edge";
-
-// Load font from local file (bundled with deployment)
-const fontUrl = new URL("./fonts/Roboto-Regular.woff2", import.meta.url);
-const fontPromise = fetch(fontUrl).then((res) => res.arrayBuffer());
 
 // Malta Public Holidays
 function getMaltaHoliday(date: Date): string | null {
@@ -137,7 +134,8 @@ export async function GET(req: Request) {
   const height = clamp(parseInt(searchParams.get("height") ?? "2778", 10) || 2778, 900, 4000);
   const dateParam = searchParams.get("date");
   const dateUTC = parseDateOrTodayCET(dateParam);
-  const [birthdays, fontData] = await Promise.all([loadBirthdays(), fontPromise]);
+  const birthdays = await loadBirthdays();
+  const fontData = getFontBuffer();
 
   const year = dateUTC.getUTCFullYear();
   const totalDays = daysInYear(year);
